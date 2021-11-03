@@ -76,11 +76,25 @@ class Game extends React.Component {
   }
 
   jumpTo(step) {
-    console.log('inside Jump', step);
     this.setState({
       stepN: step,
       xIsNext: (step % 2) === 0,
     })
+  }
+
+  displayLocation(move) {
+    let res;
+    if (!move)
+      res = 'Go to game start';
+    else {
+      const location = this.state.history[move].squares.reduce((tot, val, ind) => {
+        let res = (val) ? tot + val : tot + '_';
+        res += ((ind+1) % 3 === 0 && ind < 8) ? ',' : ''; 
+        return res;
+      }, '');
+      res = `Go to move #${move} ` + location;
+    }
+    return res;
   }
 
   render() {
@@ -88,15 +102,12 @@ class Game extends React.Component {
     const current = history[this.state.stepN];
     const winner = calculateWinner(current.squares);
     const moves = history.map((step, move) => {
-      const description = (move)
-                        ? `Go to move #${move}`
-                        : 'Go to game start';
+      const description = this.displayLocation(move);
       return (
         <li 
           key={move}
         >
           <button
-            // className={'bold'}
             className={(move === this.state.stepN) ? 'bold' : ''}
             onClick={() => {
               this.jumpTo(move);
@@ -135,6 +146,8 @@ ReactDOM.render(
   <Game />,
   document.getElementById('root')
 );
+
+const log = console.log;
 
 function calculateWinner(squares) {
   const lines = [
