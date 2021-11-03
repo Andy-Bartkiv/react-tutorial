@@ -76,6 +76,7 @@ class Game extends React.Component {
   }
 
   jumpTo(step) {
+    console.log('inside Jump', step);
     this.setState({
       stepN: step,
       xIsNext: (step % 2) === 0,
@@ -91,8 +92,12 @@ class Game extends React.Component {
                         ? `Go to move #${move}`
                         : 'Go to game start';
       return (
-        <li key={move}>
+        <li 
+          key={move}
+        >
           <button
+            // className={'bold'}
+            className={(move === this.state.stepN) ? 'bold' : ''}
             onClick={() => {
               this.jumpTo(move);
             }}
