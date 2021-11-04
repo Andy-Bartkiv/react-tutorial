@@ -48,10 +48,12 @@ class Game extends React.Component {
     super(props);
     this.state = {
       history: [{
+        index: 0,
         squares: Array(9).fill(null)
       }],
       stepN: 0,
       xIsNext: true,
+      sortDesc: true
     };
   }
 
@@ -59,12 +61,15 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepN + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
+    const index = current.index;
+    // log('hC', index, squares);
     if (calculateWinner(squares) || squares[i])
       return;
     squares[i] = (this.state.xIsNext) ? 'X' : 'O';
     this.setState({
       history: history.concat([{
-        squares: squares
+        squares: squares,
+        index: index + 1,
       }]),
       stepN: history.length,
       xIsNext: !this.state.xIsNext,
@@ -75,6 +80,12 @@ class Game extends React.Component {
     this.setState({
       stepN: step,
       xIsNext: (step % 2) === 0,
+    })
+  }
+
+  sortHistory() {
+    this.setState({
+      sortDesc: !this.state.sortDesc,
     })
   }
 
@@ -94,22 +105,24 @@ class Game extends React.Component {
   }
 
   render() {
-    const history = this.state.history;
+    let history = [...this.state.history];
     const current = history[this.state.stepN];
     const winner = calculateWinner(current.squares);
+    // history = (this.state.sortDesc) ? history : history.reverse();
+    if (!this.state.sortDesc) 
+      history.sort((a,b) => (a.index - b.index) ? -1 : 1);
     const moves = history.map((step, move) => {
-      const description = this.displayLocation(move);
       return (
         <li 
           key={move}
         >
           <button
-            className={(move === this.state.stepN) ? 'bold' : ''}
+            className={(step.index === this.state.stepN) ? 'bold' : ''}
             onClick={() => {
-              this.jumpTo(move);
+              this.jumpTo(step.index);
             }}
           >
-            {description}
+            {this.displayLocation(step.index)}
           </button>
         </li>
       )
@@ -129,6 +142,11 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
+          <button
+            onClick = { () => this.sortHistory() }
+          >
+            {(this.state.sortDesc) ? 'Sort -Up-' : 'Sort Down'}
+          </button>
           <ol>{moves}</ol>
         </div>
       </div>
