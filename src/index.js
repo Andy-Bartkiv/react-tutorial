@@ -96,19 +96,12 @@ class Game extends React.Component {
     })
   }
 
-  displayLocation(move) {
-    let res;
-    if (!move)
-      res = 'Go to game start';
-    else {
-      const location = this.state.history[move].squares.reduce((tot, val, ind) => {
-        let res = (val) ? tot + val : tot + '_';
-        res += ((ind+1) % 3 === 0 && ind < 8) ? ',' : ''; 
-        return res;
-      }, '');
-      res = `Go to move #${move} ` + location;
-    }
-    return res;
+  displayBoardShot(move) {
+    return this.state.history[move].squares.reduce((tot, val, ind) => {
+      let res = (val) ? tot + val : tot + ' ';
+      res += ((ind+1) % 3 === 0 && ind < 8) ? '\n' : ''; 
+      return res;
+    }, '');
   }
 
   render() {
@@ -117,28 +110,31 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
     if (!this.state.sortDesc) 
       history.sort((a,b) => (a.index - b.index) ? -1 : 1);
+    let status = (winner)
+      ? `Winner ${winner.mark}`
+      : (current.index >= 9) 
+        ? `It's a draw`
+        :`Next player: ${(this.state.xIsNext) ? 'X' : 'O'}`;
+
     const moves = history.map((step, move) => {
       return (
-        <li 
+        <div 
+          className='step'
           key={move}
         >
           <button
-            className={(step.index === this.state.stepN) ? 'bold' : ''}
-            onClick={() => {
-              this.jumpTo(step.index);
-            }}
+            className={ (step.index === this.state.stepN) ? 'bold' : '' }
+            onClick={ () => this.jumpTo(step.index) }
           >
-            {this.displayLocation(step.index)}
+            { (!step.index) ? `${move}. Go to game start` : `${move}.  Go to move #${step.index}` }
           </button>
-        </li>
+          <div className='shot-board'>
+            { this.displayBoardShot(step.index) }
+          </div>
+        </div>
       )
     })
-
-    let status = (winner)
-                ? `Winner ${winner.mark}`
-                : (current.index >= 9) 
-                  ? `It's a draw`
-                  :`Next player: ${(this.state.xIsNext) ? 'X' : 'O'}`;
+                  
     return (
       <div className="game">
         <div className="game-board">
@@ -149,13 +145,15 @@ class Game extends React.Component {
           />
         </div>
         <div className="game-info">
-          <div>{status}</div>
-          <button
-            onClick = { () => this.sortHistory() }
-          >
-            {(this.state.sortDesc) ? 'Sort -Up-' : 'Sort Down'}
-          </button>
-          <ol>{moves}</ol>
+          <div className="status">
+            {status}
+          </div>
+          <div>Sort:&nbsp;
+            <button onClick = { () => this.sortHistory() }>
+              {(!this.state.sortDesc) ? String.fromCharCode(8679) : String.fromCharCode(8681)}
+            </button>
+          </div>
+          <div>{moves}</div>
         </div>
       </div>
     );

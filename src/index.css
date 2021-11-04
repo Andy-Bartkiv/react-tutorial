@@ -1,5 +1,6 @@
 body {
     font: 14px "Century Gothic", Futura, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     margin: 20px;
   }
   
@@ -8,11 +9,8 @@ body {
   }
 
 button {
-  font-size: 14px;
   font-family: 'Courier New', Courier, monospace;
-}
-.bold {
-  font-weight: 900;
+  cursor: pointer;
 }
 
   .board-row:after {
@@ -61,4 +59,32 @@ button {
   .game-info {
     margin-left: 20px;
   }
-  
+
+  .bold {
+    font-weight: 900;
+    color: darkred;
+  }
+  .step {
+    display: flex;
+  }
+  .step button {
+    text-align: left;
+    width: 175px;
+  }
+
+  .shot-board {
+    padding: 2px 0;
+    padding-left: 5px;
+    display: none;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 900;
+    letter-spacing: 5px;
+    line-height: 75%;
+    background: #eee;
+    outline: 1px solid #999;
+    white-space: pre-wrap;
+  }
+
+  .step:hover .shot-board {
+    display:inline;
+  }
