@@ -43,6 +43,11 @@ button {
   .square:focus {
     outline: none;
   }
+
+  .win {
+    color: red;
+    background: #ddd; 
+  }
   
   .kbd-navigation .square:focus {
     background: #ddd;
