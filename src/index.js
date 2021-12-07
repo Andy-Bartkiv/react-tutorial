@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
@@ -52,117 +52,105 @@ function Board(props) {
 }
 
 // GAME component
-class Game extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      history: [{
-        index: 0,
-        squares: Array(9).fill(null)
-      }],
-      stepN: 0,
-      xIsNext: true,
-      sortDesc: true,
-    };
-  }
 
-  handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepN + 1);
-    const current = history[history.length - 1];
+function Game() {
+  const [history, setHistory] = useState([{
+    index: 0,
+    squares: Array(9).fill(null)
+  }]);
+  const [stepN, setStepN] = useState(0);
+  const[xIsNext, setXIsNext] = useState(true);
+  const[sortDesc, setSortDesc] = useState(true);
+
+  function handleClick(i) {
+    const historyOld = history.slice(0, stepN + 1);
+    const current = historyOld[historyOld.length - 1];
     const squares = current.squares.slice();
-    const index = current.index;
+    const index = current.index; 
     const winner = calculateWinner(squares);
 
     if (winner || squares[i])
       return;
-    squares[i] = (this.state.xIsNext) ? 'X' : 'O';
-    this.setState({
-      history: history.concat([{
-        squares: squares,
-        index: index + 1,
-      }]),
-      stepN: history.length,
-      xIsNext: !this.state.xIsNext,
-    });
+    squares[i] = (xIsNext) ? 'X' : 'O';
+    setHistory([...history, {
+      squares: squares,
+      index: index + 1,
+    }]);
+    setStepN(historyOld.length);
+    setXIsNext(!xIsNext);
   }
 
-  jumpTo(step) {
-    this.setState({
-      stepN: step,
-      xIsNext: (step % 2) === 0,
-    })
+  function jumpTo(step) {
+    setStepN(step);
+    setXIsNext((step % 2) === 0);
   }
 
-  sortHistory() {
-    this.setState({
-      sortDesc: !this.state.sortDesc,
-    })
+  function sortHistory() {
+    setSortDesc(!sortDesc);
   }
 
-  displayBoardShot(move) {
-    return this.state.history[move].squares.reduce((tot, val, ind) => {
-      let res = (val) ? tot + val : tot + ' ';
-      res += ((ind+1) % 3 === 0 && ind < 8) ? '\n' : ''; 
-      return res;
-    }, '');
+  function displayBoardShot(move) {
+    return history[move].squares
+      .reduce((tot, val, ind) => {
+        let res = (val) ? tot + val : tot + ' ';
+        res += ((ind+1) % 3 === 0 && ind < 8) ? '\n' : ''; 
+        return res;
+      }, '');
   }
 
-  render() {
-    let history = [...this.state.history];
-    const current = history[this.state.stepN];
-    const winner = calculateWinner(current.squares);
-    if (!this.state.sortDesc) 
-      history.sort((a,b) => (a.index - b.index) ? -1 : 1);
-    let status = (winner)
-      ? `Winner ${winner.mark}`
-      : (current.index >= 9) 
-        ? `It's a draw`
-        :`Next player: ${(this.state.xIsNext) ? 'X' : 'O'}`;
+  let historyOld = [...history];
+  const current = historyOld[stepN];
+  const winner = calculateWinner(current.squares);
+  if (!sortDesc) 
+    historyOld.sort((a,b) => (a.index - b.index) ? -1 : 1);
+  let status = (winner)
+    ? `Winner ${winner.mark}`
+    : (current.index >= 9) 
+      ? `It's a draw`
+      : `Next player: ${(xIsNext) ? 'X' : 'O'}`;
 
-    const moves = history.map((step, move) => {
-      return (
-        <div 
-          className='step'
-          key={move}
-        >
-          <button
-            className={ (step.index === this.state.stepN) ? 'bold' : '' }
-            onClick={ () => this.jumpTo(step.index) }
-          >
-            { (!step.index) ? `${move}. Go to game start` : `${move}.  Go to move #${step.index}` }
-          </button>
-          <div className='shot-board'>
-            { this.displayBoardShot(step.index) }
-          </div>
-        </div>
-      )
-    })
-                  
+  const moves = historyOld.map((step, move) => {
     return (
-      <div className="game">
-        <div className="game-board">
-          <Board
-            winner={ (winner) ? winner.pos : null}
-            squares={current.squares}
-            onClick={(i) => this.handleClick(i)} 
-          />
-        </div>
-        <div className="game-info">
-          <div className="status">
-            {status}
-          </div>
-          <div>Sort:&nbsp;
-            <button onClick = { () => this.sortHistory() }>
-              {(!this.state.sortDesc) ? String.fromCharCode(8679) : String.fromCharCode(8681)}
-            </button>
-          </div>
-          <div>{moves}</div>
+      <div 
+        className = 'step'
+        key = { move }
+      >
+        <button
+          className = { (step.index === stepN) ? 'bold' : '' }
+          onClick = { () => jumpTo(step.index) }
+        >
+          { (!step.index) ? `${move}. Go to game start` : `${move}.  Go to move #${step.index}` }
+        </button>
+        <div className='shot-board'>
+          { displayBoardShot(step.index) }
         </div>
       </div>
-    );
-  }
-}
+    )
+  })
 
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board
+          winner = { (winner) ? winner.pos : null}
+          squares = { current.squares }
+          onClick = { (i) => handleClick(i) } 
+        />
+      </div>
+      <div className="game-info">
+        <div className="status">
+          {status}
+        </div>
+        <div>Sort:&nbsp;
+          <button onClick = { () => sortHistory() }>
+            { (!sortDesc) ? String.fromCharCode(8679) : String.fromCharCode(8681)}
+          </button>
+        </div>
+        <div>{ moves }</div>
+      </div>
+    </div>
+  );
+}
 // ========================================
 
 ReactDOM.render(
