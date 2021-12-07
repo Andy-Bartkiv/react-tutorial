@@ -6,46 +6,49 @@ import './index.css';
 
 // SQUARE component
 function Square(props) {
-  let win = '';
-  if (props.winner && props.winner.includes(props.id))
-    win = 'win';
+  // if we need to mark winning squares
+  let win = (props.winner && props.winner.includes(props.id)) 
+    ? 'win' 
+    : '';
   return (
     <button
-      className={ `square ${win}` }
-      onClick={ props.onClick }
+      className = { `square ${win}` }
+      onClick = { props.onClick }
     >
-      {props.value}
+      { props.value }
     </button>
   )
-}
+};
 
 // BOARD component
-class Board extends React.Component {
-  renderRow(row) {
+function Board(props) {
+  function renderRow(row) {
     return (
-      <div className="board-row" key={`row-${row}`}>
-        { [0,1,2].map((sq) => this.renderSquare(row*3 + sq)) }
-    </div>
+      <div 
+        className = "board-row" 
+        key = { `row-${row}` }
+      >
+        { [0,1,2].map((sq) => renderSquare(row*3 + sq)) }
+      </div>
     )
-  }
-  renderSquare(i) {
+  };
+  function renderSquare(i) {
     return (
       <Square
-        key = {i}
-        id = {i}
-        winner = {this.props.winner}
-        value={this.props.squares[i]}
-        onClick={() => this.props.onClick(i)}
+        key = { i }
+        id = { i }
+        winner = { props.winner }
+        value = { props.squares[i] }
+        onClick = { () => props.onClick(i) }
       />
-    );
-  }
-  render() {
-    return (
-      <div>
-        { [0,1,2].map((row) => this.renderRow(row)) }
-      </div>
-    );
-  }
+    )
+  };
+  
+  return (
+    <div>
+      { [0,1,2].map((row) => renderRow(row)) }
+    </div>
+  );  
 }
 
 // GAME component
