@@ -16,3 +16,4 @@ Throughout this tutorial, we touched on React concepts including elements, compo
 - Add a toggle button that lets you sort the moves in either ascending or descending order.
 - When someone wins, highlight the three squares that caused the win.
 - When no one wins, display a message about the result being a draw.
+- Refactor code substituting class components with functional components only.

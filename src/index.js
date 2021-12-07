@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-// const log = console.log;
+const log = console.log;
 
 // SQUARE component
 function Square(props) {
@@ -59,8 +59,8 @@ function Game() {
     squares: Array(9).fill(null)
   }]);
   const [stepN, setStepN] = useState(0);
-  const[xIsNext, setXIsNext] = useState(true);
-  const[sortDesc, setSortDesc] = useState(true);
+  const [xIsNext, setXIsNext] = useState(true);
+  const [sortDesc, setSortDesc] = useState(true);
 
   function handleClick(i) {
     const historyOld = history.slice(0, stepN + 1);
@@ -72,7 +72,7 @@ function Game() {
     if (winner || squares[i])
       return;
     squares[i] = (xIsNext) ? 'X' : 'O';
-    setHistory([...history, {
+    setHistory([...historyOld, {
       squares: squares,
       index: index + 1,
     }]);
@@ -81,6 +81,7 @@ function Game() {
   }
 
   function jumpTo(step) {
+    log(step, stepN)
     setStepN(step);
     setXIsNext((step % 2) === 0);
   }
@@ -138,6 +139,7 @@ function Game() {
         />
       </div>
       <div className="game-info">
+        <div>OXO-Game v.12.7.3</div>
         <div className="status">
           {status}
         </div>
