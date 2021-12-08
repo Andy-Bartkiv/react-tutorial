@@ -17,3 +17,5 @@ Throughout this tutorial, we touched on React concepts including elements, compo
 - When someone wins, highlight the three squares that caused the win.
 - When no one wins, display a message about the result being a draw.
 - Refactor code substituting class components with functional components only.
+- Structure React project, separating components, styles etc.
+- Finally - Deploy project using <strong>gh-pages</strong>.
