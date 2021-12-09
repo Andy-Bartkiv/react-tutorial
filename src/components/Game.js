@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import calculateWinner from '../modules/calcWinner';
 import Board from './Board';
+import '../styles/Game.css';
 
 // GAME component
 
@@ -89,7 +90,7 @@ function Game() {
         />
       </div>
       <div className="game-info">
-        <div>OXO-Game v.12.7.3</div>
+        <div>OXO-Game v.12.10.1</div>
         <div className="status">
           {status}
         </div>
