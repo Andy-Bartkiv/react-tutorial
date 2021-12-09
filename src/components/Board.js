@@ -1,4 +1,5 @@
 import Square from "./Square";
+import styles from '../styles/Board.module.css'
 
 // BOARD component
 function Board(props) {
@@ -6,7 +7,7 @@ function Board(props) {
     function renderRow(row) {
       return (
         <div 
-          className = "board-row" 
+          className = { `${styles.board_row}` } 
           key = { `row-${row}` }
         >
           { [0,1,2].map((sq) => renderSquare(row*3 + sq)) }

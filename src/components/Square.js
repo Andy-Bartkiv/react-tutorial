@@ -1,12 +1,14 @@
+import styles from '../styles/Square.module.css'
+
 // SQUARE component
 function Square(props) {
-    // if we need to mark winning squares
-    let win = (props.winner && props.winner.includes(props.id)) 
-      ? 'win' 
-      : '';
+  let squareClass = styles.square;
+  // if we need to mark winning squares
+    if (props.winner && props.winner.includes(props.id)) 
+      squareClass += ` ${styles.win}`; 
     return (
       <button
-        className = { `square ${win}` }
+        className = { squareClass }
         onClick = { props.onClick }
       >
         { props.value }

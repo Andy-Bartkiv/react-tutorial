@@ -1,0 +1,9 @@
+.board_row:after {
+    clear: both;
+    content: "";
+    display: table;
+}
+
+.board_row {
+    border: 10px soild green;
+}
